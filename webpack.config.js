@@ -24,7 +24,15 @@ module.exports = {
     rules: [
       {
         test: /.s?css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: { postcssOptions: { plugins: [['postcss-preset-env', { stage: 4 }]], } }
+          },
+          'sass-loader'
+        ]
       },
       {
         test: /\.js$/i,
@@ -52,10 +60,10 @@ module.exports = {
       filename: 'css/[name].min.css',
     }),
     new ESLintPlugin(),
-	/*new webpack.ProvidePlugin({
-      '$': 'jquery',
-      'jQuery': 'jquery',
-    }),*/
+    /*new webpack.ProvidePlugin({
+        '$': 'jquery',
+        'jQuery': 'jquery',
+      }),*/
   ],
   optimization: {
     minimizer: [
@@ -87,7 +95,13 @@ module.exports = {
     children: true
   },
   devServer: {
-    contentBase: "./",
-    publicPath: "/dist",
+    port: 3000,
+    static: {
+      directory: path.join(__dirname, './'),
+      publicPath: '/',
+    },
+    devMiddleware: {
+      publicPath: '/dist',
+    },
   },
 }
